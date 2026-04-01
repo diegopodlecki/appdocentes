@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agenda Docente</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">AD</div>
+          <div>
+            <p>Agenda Docente</p>
+            <span>Version estatica lista para probar</span>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <a href="#inicio" class="nav-link">Inicio</a>
+          <a href="#curso" class="nav-link">Curso</a>
+          <a href="#calendario" class="nav-link">Calendario</a>
+          <a href="#integraciones" class="nav-link">Integraciones</a>
+        </nav>
+
+        <section class="sidebar-card">
+          <p>Siguiente fase</p>
+          <strong>Persistencia real</strong>
+          <span>Cuando quieras, esta version se puede conectar a Supabase o a una API propia.</span>
+        </section>
+      </aside>
+
+      <main class="main-content">
+        <section id="inicio" class="hero">
+          <div>
+            <span class="eyebrow">Agenda academica centralizada</span>
+            <h1>Organiza cursos, asistencia, tareas y fechas clave en un solo lugar.</h1>
+            <p class="hero-copy">
+              Esta version estatica mantiene una experiencia cercana a Google Classroom
+              y sirve para validar estructura, navegacion y alcance del producto.
+            </p>
+          </div>
+
+          <div class="hero-panel">
+            <p>Incluye</p>
+            <ul class="plain-list">
+              <li>Gestion visual de cursos</li>
+              <li>Control de asistencia por fecha</li>
+              <li>Tareas con estados docentes</li>
+              <li>Calendario de eventos institucionales</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="stats-grid" id="stats"></section>
+
+        <section class="section-heading">
+          <div>
+            <span class="eyebrow">Cursos</span>
+            <h2>Panel principal del docente</h2>
+          </div>
+        </section>
+
+        <section id="course-grid" class="course-grid"></section>
+
+        <section id="curso" class="section-heading">
+          <div>
+            <span class="eyebrow">Curso activo</span>
+            <h2>Detalle del curso seleccionado</h2>
+          </div>
+        </section>
+
+        <section id="course-detail" class="three-column"></section>
+
+        <section id="calendario" class="section-heading">
+          <div>
+            <span class="eyebrow">Calendario</span>
+            <h2>Fechas importantes</h2>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div id="event-list" class="event-list"></div>
+        </section>
+
+        <section id="integraciones" class="section-heading">
+          <div>
+            <span class="eyebrow">Integraciones</span>
+            <h2>Google Classroom</h2>
+          </div>
+        </section>
+
+        <section class="two-column">
+          <div class="panel">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">Hallazgos</span>
+                <h3>Resumen tecnico</h3>
+              </div>
+            </div>
+            <div id="integration-notes" class="note-list"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">Roadmap</span>
+                <h3>Fases sugeridas</h3>
+              </div>
+            </div>
+            <div id="integration-milestones" class="milestone-list"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+  </html>
