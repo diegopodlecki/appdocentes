@@ -10,12 +10,15 @@
     <header class="topbar">
       <div class="topbar-brand">
         <div class="topbar-logo">AD</div>
-        <span>Agenda Docente</span>
+        <div>
+          <span>Agenda Docente</span>
+          <small>Gestión local para cursos y planificación</small>
+        </div>
       </div>
 
       <label class="topbar-search">
         <span class="topbar-search-icon">⌕</span>
-        <input type="search" placeholder="Buscar cursos, tareas o fechas" />
+        <input id="search-input" type="search" placeholder="Buscar cursos, actividades o fechas" />
       </label>
 
       <div class="topbar-avatar" aria-label="Perfil del docente">DP</div>
@@ -25,30 +28,44 @@
       <aside class="sidebar">
         <nav class="sidebar-nav">
           <a href="#inicio" class="sidebar-link sidebar-link-active">Inicio</a>
-          <a href="#cursos" class="sidebar-link">Mis cursos</a>
+          <a href="#cursos" class="sidebar-link">Cursos</a>
+          <a href="#curso-detalle" class="sidebar-link">Curso activo</a>
+          <a href="#tareas" class="sidebar-link">Actividades</a>
           <a href="#calendario" class="sidebar-link">Calendario</a>
-          <a href="#tareas" class="sidebar-link">Tareas</a>
         </nav>
+
+        <section class="sidebar-card">
+          <span class="section-kicker">Modo local</span>
+          <h3>Todo queda guardado en este navegador</h3>
+          <p>Podés agregar, editar y borrar cursos, estudiantes, actividades y eventos sin depender del repo.</p>
+          <button id="reset-demo-button" class="ghost-button" type="button">Restaurar demo</button>
+        </section>
       </aside>
 
       <main class="main-content">
+        <section id="flash-message" class="flash-message hidden" aria-live="polite"></section>
+
         <section id="inicio" class="hero-card">
           <div>
             <span class="section-kicker">Agenda académica</span>
-            <h1>Gestioná cursos, asistencia, tareas y calendario desde un solo lugar.</h1>
+            <h1>Organizá el día a día del aula con una interfaz más útil y flexible.</h1>
             <p class="section-copy">
-              La aplicación está pensada para resolver el trabajo cotidiano del docente
-              con un flujo simple, directo y sin configuraciones externas.
+              Administrá cursos, actualizá estudiantes, cargá actividades y mantené el calendario docente al día
+              desde un único panel.
             </p>
+            <div class="hero-actions">
+              <button id="focus-course-form" class="primary-button" type="button">Crear curso</button>
+              <button id="focus-event-form" class="ghost-button" type="button">Agregar evento</button>
+            </div>
           </div>
 
           <div class="hero-summary">
-            <p class="hero-summary-title">Vista rápida</p>
+            <p class="hero-summary-title">Qué ya podés hacer</p>
             <ul class="hero-list">
-              <li>Cursos con estado y acceso directo</li>
-              <li>Asistencia por fecha y resumen</li>
-              <li>Tareas con seguimiento docente</li>
-              <li>Calendario de entregas, evaluaciones y feriados</li>
+              <li>Crear y editar cursos completos</li>
+              <li>Gestionar alumnos por comisión</li>
+              <li>Agregar actividades con estado y fecha</li>
+              <li>Actualizar el calendario institucional</li>
             </ul>
           </div>
         </section>
@@ -57,17 +74,72 @@
 
         <section id="cursos" class="section-header">
           <div>
-            <span class="section-kicker">Mis cursos</span>
+            <span class="section-kicker">Cursos</span>
             <h2>Panel principal del docente</h2>
           </div>
+          <button id="new-course-button" class="ghost-button" type="button">Nuevo curso</button>
         </section>
 
         <section id="course-grid" class="course-grid"></section>
 
+        <section class="workspace-grid">
+          <article class="panel-card form-card">
+            <div class="panel-header">
+              <div>
+                <span class="section-kicker">Editor</span>
+                <h3 id="course-form-title">Nuevo curso</h3>
+              </div>
+            </div>
+
+            <form id="course-form" class="stack-form">
+              <input type="hidden" id="course-id" />
+              <label class="field">
+                <span>Nombre del curso</span>
+                <input id="course-name" type="text" placeholder="Ej. Historia - 3° B" required />
+              </label>
+              <label class="field">
+                <span>Institución o sección</span>
+                <input id="course-section" type="text" placeholder="Ej. Escuela Normal N° 5" required />
+              </label>
+              <label class="field">
+                <span>Resumen corto</span>
+                <input id="course-heading" type="text" placeholder="Ej. Procesos políticos y sociales" required />
+              </label>
+              <label class="field">
+                <span>Descripción</span>
+                <textarea
+                  id="course-description"
+                  rows="4"
+                  placeholder="Descripción pedagógica, dinámica o foco del curso"
+                  required
+                ></textarea>
+              </label>
+              <label class="field">
+                <span>Horarios</span>
+                <input id="course-schedule" type="text" placeholder="Separá varios horarios con |" required />
+              </label>
+              <div class="form-actions">
+                <button class="primary-button" type="submit">Guardar curso</button>
+                <button id="course-form-cancel" class="ghost-button hidden" type="button">Cancelar edición</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="panel-card helper-card">
+            <div class="panel-header">
+              <div>
+                <span class="section-kicker">Contexto</span>
+                <h3>Curso seleccionado</h3>
+              </div>
+            </div>
+            <div id="selected-course-summary" class="summary-block"></div>
+          </article>
+        </section>
+
         <section id="curso-detalle" class="section-header">
           <div>
             <span class="section-kicker">Curso activo</span>
-            <h2>Detalle del curso seleccionado</h2>
+            <h2>Detalle y estudiantes</h2>
           </div>
         </section>
 
@@ -75,13 +147,63 @@
 
         <section id="tareas" class="section-header">
           <div>
-            <span class="section-kicker">Tareas</span>
-            <h2>Seguimiento docente</h2>
+            <span class="section-kicker">Actividades</span>
+            <h2>Seguimiento por curso</h2>
           </div>
+          <button id="new-task-button" class="ghost-button" type="button">Nueva actividad</button>
         </section>
 
-        <section class="panel-card">
-          <div id="task-overview" class="task-overview"></div>
+        <section class="workspace-grid">
+          <article class="panel-card">
+            <div class="panel-header">
+              <div>
+                <span class="section-kicker">Lista</span>
+                <h3>Actividades del curso</h3>
+              </div>
+            </div>
+            <div id="task-overview" class="task-overview"></div>
+          </article>
+
+          <article class="panel-card form-card">
+            <div class="panel-header">
+              <div>
+                <span class="section-kicker">Editor</span>
+                <h3 id="task-form-title">Nueva actividad</h3>
+              </div>
+            </div>
+
+            <form id="task-form" class="stack-form">
+              <input type="hidden" id="task-id" />
+              <label class="field">
+                <span>Título</span>
+                <input id="task-title" type="text" placeholder="Ej. Trabajo práctico" required />
+              </label>
+              <label class="field">
+                <span>Tema</span>
+                <input id="task-topic" type="text" placeholder="Ej. Revoluciones atlánticas" required />
+              </label>
+              <label class="field">
+                <span>Fecha de entrega</span>
+                <input id="task-date" type="date" required />
+              </label>
+              <label class="field">
+                <span>Estado</span>
+                <select id="task-status">
+                  <option value="Pendiente de entrega">Pendiente de entrega</option>
+                  <option value="En proceso">En proceso</option>
+                  <option value="Aprobado">Aprobado</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Comentario</span>
+                <textarea id="task-comment" rows="4" placeholder="Observaciones para la actividad" required></textarea>
+              </label>
+              <div class="form-actions">
+                <button class="primary-button" type="submit">Guardar actividad</button>
+                <button id="task-form-cancel" class="ghost-button hidden" type="button">Cancelar edición</button>
+              </div>
+            </form>
+          </article>
         </section>
 
         <section id="calendario" class="section-header">
@@ -89,16 +211,61 @@
             <span class="section-kicker">Calendario</span>
             <h2>Fechas importantes</h2>
           </div>
+          <button id="new-event-button" class="ghost-button" type="button">Nuevo evento</button>
         </section>
 
-        <section class="panel-card">
-          <div id="event-list" class="event-list"></div>
-        </section>
+        <section class="workspace-grid">
+          <article class="panel-card">
+            <div class="panel-header">
+              <div>
+                <span class="section-kicker">Agenda</span>
+                <h3>Eventos próximos</h3>
+              </div>
+            </div>
+            <div id="event-list" class="event-list"></div>
+          </article>
 
+          <article class="panel-card form-card">
+            <div class="panel-header">
+              <div>
+                <span class="section-kicker">Editor</span>
+                <h3 id="event-form-title">Nuevo evento</h3>
+              </div>
+            </div>
+
+            <form id="event-form" class="stack-form">
+              <input type="hidden" id="event-id" />
+              <label class="field">
+                <span>Título del evento</span>
+                <input id="event-title" type="text" placeholder="Ej. Evaluación parcial" required />
+              </label>
+              <label class="field">
+                <span>Descripción</span>
+                <textarea id="event-description" rows="4" placeholder="Detalle del evento" required></textarea>
+              </label>
+              <label class="field">
+                <span>Fecha</span>
+                <input id="event-date" type="date" required />
+              </label>
+              <label class="field">
+                <span>Tipo</span>
+                <input id="event-type" type="text" placeholder="Ej. Entrega, Reunión, Feriado" required />
+              </label>
+              <label class="field">
+                <span>Curso o alcance</span>
+                <input id="event-course-name" type="text" placeholder="Ej. Historia - 3° B o General" required />
+              </label>
+              <div class="form-actions">
+                <button class="primary-button" type="submit">Guardar evento</button>
+                <button id="event-form-cancel" class="ghost-button hidden" type="button">Cancelar edición</button>
+              </div>
+            </form>
+          </article>
+        </section>
       </main>
     </div>
 
-    <button class="fab-button" type="button">+ Nueva tarea</button>
+    <button id="fab-task-button" class="fab-button" type="button">+ Nueva actividad</button>
 
     <script src="./script.js"></script>
   </body>
