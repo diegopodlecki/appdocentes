@@ -29,23 +29,16 @@
           <a href="#calendario" class="sidebar-link">Calendario</a>
           <a href="#tareas" class="sidebar-link">Tareas</a>
         </nav>
-
-        <div class="sidebar-section">
-          <p class="sidebar-section-title">Classroom</p>
-          <button id="sidebar-connect-google" class="sidebar-link sidebar-button" type="button">
-            Conectar cuenta
-          </button>
-        </div>
       </aside>
 
       <main class="main-content">
         <section id="inicio" class="hero-card">
           <div>
             <span class="section-kicker">Agenda académica</span>
-            <h1>Gestioná cursos, asistencia, tareas y calendario con una experiencia tipo Classroom.</h1>
+            <h1>Gestioná cursos, asistencia, tareas y calendario desde un solo lugar.</h1>
             <p class="section-copy">
-              La aplicación mantiene la lógica académica actual y puede conectarse a Google
-              Classroom para traer los cursos reales del docente.
+              La aplicación está pensada para resolver el trabajo cotidiano del docente
+              con un flujo simple, directo y sin configuraciones externas.
             </p>
           </div>
 
@@ -59,22 +52,6 @@
             </ul>
           </div>
         </section>
-
-        <section id="google-banner" class="google-banner">
-          <div>
-            <strong>Conectar con Google</strong>
-            <p>
-              Vinculá tu cuenta para importar tus cursos activos de Google Classroom.
-              Reemplazá el placeholder del Client ID por tu credencial de Google Cloud.
-            </p>
-          </div>
-          <div class="google-banner-actions">
-            <button id="connect-google-button" class="primary-button" type="button">Conectar con Google</button>
-            <button id="reconnect-google-button" class="secondary-button hidden" type="button">Reconectar</button>
-          </div>
-        </section>
-
-        <section id="google-status" class="status-message hidden"></section>
 
         <section id="stats" class="stats-grid"></section>
 
@@ -118,41 +95,11 @@
           <div id="event-list" class="event-list"></div>
         </section>
 
-        <section id="integraciones" class="section-header">
-          <div>
-            <span class="section-kicker">Integraciones</span>
-            <h2>Google Classroom</h2>
-          </div>
-        </section>
-
-        <section class="integration-grid">
-          <div class="panel-card">
-            <div class="panel-header">
-              <div>
-                <span class="section-kicker">Hallazgos</span>
-                <h3>Resumen técnico</h3>
-              </div>
-            </div>
-            <div id="integration-notes" class="note-list"></div>
-          </div>
-
-          <div class="panel-card">
-            <div class="panel-header">
-              <div>
-                <span class="section-kicker">Roadmap</span>
-                <h3>Fases sugeridas</h3>
-              </div>
-            </div>
-            <div id="integration-milestones" class="milestone-list"></div>
-          </div>
-        </section>
       </main>
     </div>
 
     <button class="fab-button" type="button">+ Nueva tarea</button>
 
     <script src="./script.js"></script>
-    <script src="https://accounts.google.com/gsi/client"></script>
-    <script src="./google-classroom.js"></script>
   </body>
 </html>

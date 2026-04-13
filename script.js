@@ -1,6 +1,6 @@
-// Datos base de la aplicación. Se mantienen como respaldo si Google Classroom no está conectado.
+// Datos base de la aplicación para una experiencia local y simple.
 const AgendaDocenteData = {
-  mockCourses: [
+  courses: [
     {
       id: "historia-3b",
       source: "mock",
@@ -158,37 +158,6 @@ const AgendaDocenteData = {
       type: "Feriado",
       courseName: "General"
     }
-  ],
-  notes: [
-    {
-      title: "OAuth 2.0 obligatorio",
-      body: "La integración con Google Classroom necesita consentimiento explícito y manejo seguro de tokens."
-    },
-    {
-      title: "Empezar con sync unidireccional",
-      body: "Conviene iniciar importando cursos y luego exportar tareas, evitando conflictos bidireccionales tempranos."
-    },
-    {
-      title: "Operación sin integración",
-      body: "La app debe seguir siendo útil incluso en escuelas sin Google Workspace o con restricciones institucionales."
-    }
-  ],
-  milestones: [
-    {
-      phase: "Fase 1",
-      title: "Conexión institucional",
-      body: "Configurar credenciales, OAuth y vinculación de cuentas docentes."
-    },
-    {
-      phase: "Fase 2",
-      title: "Importación de cursos",
-      body: "Traer cursos y metadata básica para evitar doble carga administrativa."
-    },
-    {
-      phase: "Fase 3",
-      title: "Publicación de tareas",
-      body: "Enviar tareas y fechas relevantes desde la agenda docente hacia Classroom."
-    }
   ]
 };
 
@@ -206,9 +175,8 @@ const courseHeaderThemes = [
 ];
 
 const appState = {
-  courses: [...AgendaDocenteData.mockCourses],
-  currentCourse: AgendaDocenteData.mockCourses[0],
-  courseSource: "mock"
+  courses: [...AgendaDocenteData.courses],
+  currentCourse: AgendaDocenteData.courses[0]
 };
 
 function escapeHtml(value) {
@@ -225,13 +193,6 @@ function getCourseTheme(index) {
 }
 
 function getCourseCardStatuses(course) {
-  if (course.source === "google") {
-    return [
-      { label: "Activo", className: "status-active" },
-      { label: "Pendientes", className: "status-pending" }
-    ];
-  }
-
   const hasDueToday = course.assignments.some((assignment) => assignment.dueDate === "2026-04-01");
   const hasPending = course.assignments.some((assignment) => assignment.status === "Pendiente de entrega");
 
@@ -242,27 +203,6 @@ function getCourseCardStatuses(course) {
   ];
 }
 
-// Convierte la respuesta de Classroom al formato que usa la app actual.
-function buildGoogleCourse(rawCourse) {
-  return {
-    id: rawCourse.id || `google-${Date.now()}`,
-    source: "google",
-    name: rawCourse.name || "Curso sin nombre",
-    section: rawCourse.section || "Google Classroom",
-    description: rawCourse.descriptionHeading || rawCourse.description || "Curso importado desde Google Classroom.",
-    descriptionHeading: rawCourse.descriptionHeading || "Google Classroom",
-    schedule: ["Sin horario sincronizado"],
-    students: [],
-    attendance: {
-      date: "Sin datos",
-      presentCount: 0,
-      absentCount: 0,
-      records: []
-    },
-    assignments: []
-  };
-}
-
 function updateSidebarActiveLink(hash = window.location.hash || "#inicio") {
   document.querySelectorAll(".sidebar-link").forEach((link) => {
     const isActive = link.getAttribute("href") === hash;
@@ -271,7 +211,7 @@ function updateSidebarActiveLink(hash = window.location.hash || "#inicio") {
 }
 
 function renderStats() {
-  const pendingTasks = AgendaDocenteData.mockCourses.flatMap((course) => course.assignments).filter(
+  const pendingTasks = AgendaDocenteData.courses.flatMap((course) => course.assignments).filter(
     (assignment) => assignment.status === "Pendiente de entrega"
   ).length;
 
@@ -279,7 +219,7 @@ function renderStats() {
     {
       label: "Cursos activos",
       value: String(appState.courses.length),
-      hint: appState.courseSource === "google" ? "Importados desde Google Classroom" : "Cursos de ejemplo activos"
+      hint: "Cursos listos para gestionar"
     },
     {
       label: "Pendientes",
@@ -332,7 +272,7 @@ function renderCourses() {
             </div>
             <div class="course-actions">
               <button class="link-button" type="button" data-course-id="${escapeHtml(course.id)}">Abrir curso</button>
-              <span class="course-meta-label">${course.source === "google" ? "Sincronizado" : "Local"}</span>
+              <span class="course-meta-label">Local</span>
             </div>
           </div>
         </article>
@@ -358,7 +298,6 @@ function renderCourseDetail() {
   const course = appState.currentCourse;
   const attendanceRecords = course.attendance.records || [];
   const assignments = course.assignments || [];
-  const hasMockAcademicData = course.source !== "google";
 
   document.getElementById("course-detail").innerHTML = `
     <article class="detail-card">
@@ -379,11 +318,6 @@ function renderCourseDetail() {
         <span class="tab-chip">Calendario</span>
         <span class="tab-chip">Alumnos</span>
       </div>
-      ${
-        !hasMockAcademicData
-          ? `<p class="detail-side-note">Este curso fue importado desde Google Classroom. La asistencia, tareas y alumnos siguen usando la lógica local de Agenda Docente y pueden completarse en una próxima fase.</p>`
-          : ""
-      }
     </article>
 
     <article class="detail-card">
@@ -439,10 +373,10 @@ function renderCourseDetail() {
                     </div>
                   `
                 )
-                .join("")}
-            </div>
-          `
-          : `<p class="empty-state">Los alumnos de este curso todavía no fueron sincronizados.</p>`
+                 .join("")}
+             </div>
+           `
+          : `<p class="empty-state">Todavía no hay alumnos cargados para este curso.</p>`
       }
     </article>
   `;
@@ -491,120 +425,15 @@ function renderEvents() {
     .join("");
 }
 
-function renderIntegrations() {
-  document.getElementById("integration-notes").innerHTML = AgendaDocenteData.notes
-    .map(
-      (note) => `
-        <article class="note-card">
-          <h3>${escapeHtml(note.title)}</h3>
-          <p>${escapeHtml(note.body)}</p>
-        </article>
-      `
-    )
-    .join("");
-
-  document.getElementById("integration-milestones").innerHTML = AgendaDocenteData.milestones
-    .map(
-      (item) => `
-        <article class="milestone-card">
-          <span class="section-kicker">${escapeHtml(item.phase)}</span>
-          <h3>${escapeHtml(item.title)}</h3>
-          <p>${escapeHtml(item.body)}</p>
-        </article>
-      `
-    )
-    .join("");
-}
-
-function showStatusMessage(message, type = "") {
-  const statusNode = document.getElementById("google-status");
-  statusNode.textContent = message;
-  statusNode.className = `status-message${type ? ` status-${type}` : ""}`;
-  statusNode.classList.remove("hidden");
-}
-
-function hideStatusMessage() {
-  const statusNode = document.getElementById("google-status");
-  statusNode.textContent = "";
-  statusNode.className = "status-message hidden";
-}
-
-function useMockCourses() {
-  appState.courses = [...AgendaDocenteData.mockCourses];
-  appState.courseSource = "mock";
-  appState.currentCourse = appState.courses[0];
-  renderStats();
-  renderCourses();
-  renderCourseDetail();
-}
-
-function useGoogleCourses(googleCourses) {
-  if (!googleCourses.length) {
-    showStatusMessage("La cuenta se conectó correctamente, pero no se encontraron cursos activos.", "success");
-    return;
-  }
-
-  appState.courses = googleCourses.map(buildGoogleCourse);
-  appState.courseSource = "google";
-  appState.currentCourse = appState.courses[0];
-  renderStats();
-  renderCourses();
-  renderCourseDetail();
-}
-
-function setGoogleBannerMode(mode) {
-  const banner = document.getElementById("google-banner");
-  const connectButton = document.getElementById("connect-google-button");
-  const reconnectButton = document.getElementById("reconnect-google-button");
-
-  if (mode === "connected") {
-    banner.classList.add("hidden");
-    connectButton.classList.add("hidden");
-    reconnectButton.classList.add("hidden");
-    return;
-  }
-
-  banner.classList.remove("hidden");
-
-  if (mode === "expired") {
-    connectButton.classList.add("hidden");
-    reconnectButton.classList.remove("hidden");
-    return;
-  }
-
-  connectButton.classList.remove("hidden");
-  reconnectButton.classList.add("hidden");
-}
-
-function setGoogleBannerConnected(isConnected) {
-  setGoogleBannerMode(isConnected ? "connected" : "disconnected");
-}
-
 document.querySelectorAll(".sidebar-nav .sidebar-link").forEach((link) => {
   link.addEventListener("click", () => updateSidebarActiveLink(link.getAttribute("href")));
 });
 
 window.addEventListener("hashchange", () => updateSidebarActiveLink());
 
-window.AgendaDocenteApp = {
-  appState,
-  AgendaDocenteData,
-  buildGoogleCourse,
-  hideStatusMessage,
-  renderCourses,
-  renderCourseDetail,
-  renderStats,
-  setGoogleBannerMode,
-  setGoogleBannerConnected,
-  showStatusMessage,
-  useGoogleCourses,
-  useMockCourses
-};
-
 renderStats();
 renderCourses();
 renderCourseDetail();
 renderTaskOverview();
 renderEvents();
-renderIntegrations();
 updateSidebarActiveLink();
